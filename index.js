@@ -28,6 +28,21 @@ app.get("/all-records", (req, res) => {
     .catch((err) => console.log(err));
 });
 
+app.get('/edit-record', (req, res) => {
+  const id = req.query.id;
+
+  Customer.findById(id).then(customer => {
+
+    res.send(customer)
+  }
+  ).catch(err => console.log(err))
+})
+
+app.get('/search', (req, res) => {
+  const value = req.query.value;
+
+  Customer.find({ $text: { $search: value } }).then(customer => res.send(customer)).catch(err => console.log(err))
+})
 
 //POST
 app.post("/post-record", (req, res) => {
@@ -51,17 +66,7 @@ app.post("/post-edit", (req, res) => {
     .catch((err) => console.log(err));
 });
 
-app.get('/edit-record', (req, res) => {
-  const id = req.query.id;
 
-  Customer.findById(id).then(customer => {
-
-    res.send(customer)
-  }
-  ).catch(err => console.log(err))
-
-
-})
 
 app.post('/delete-by-id', (req, res) => {
   const id = req.body.id;

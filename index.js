@@ -32,31 +32,30 @@ app.get("/all-records", (req, res) => {
 //POST
 app.post("/post-record", (req, res) => {
   const data = req.body;
-  console.log(data);
+
   const customer = new Customer({
     ...data,
   });
   customer
     .save()
-    .then((customer) => res.send("saved"))
+    .then(() => res.send({ success: true }))
     .catch((err) => console.log(err));
 });
 app.post("/post-edit", (req, res) => {
   const data = req.body;
   const customer = data;
-  console.log(customer);
-  Customer.findByIdAndUpdate(customer.id, { ...customer }, { new: true }).then((cus) => {
-    console.log(cus);
-    res.send({ msg: "updated" })
+
+  Customer.findByIdAndUpdate(customer.id, { ...customer }, { new: true }).then(() => {
+    res.send({ success: true })
   })
     .catch((err) => console.log(err));
 });
 
 app.get('/edit-record', (req, res) => {
   const id = req.query.id;
-  console.log(id);
+
   Customer.findById(id).then(customer => {
-    console.log(customer);
+
     res.send(customer)
   }
   ).catch(err => console.log(err))

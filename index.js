@@ -4,9 +4,16 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
 const Customer = require("./Customer");
+const multer = require('multer')
 
 app.use(express.json());
-
+const storage = multer.diskStorage({
+  destination: '../uploads',
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '.json')
+  }
+})
+const upload = multer({ storage: storage })
 app.use(cors());
 
 mongoose
@@ -67,9 +74,20 @@ app.post("/post-edit", (req, res) => {
 });
 
 
-
 app.post('/delete-by-id', (req, res) => {
   const id = req.body.id;
   Customer.findByIdAndDelete(id).then(() => res.send({ msg: "success" })).catch(err => console.log(err))
+})
+app.get('/delete-all', (req, res) => {
+  Customer.deleteMany().then(() => res.send({ msg: "success" })).catch(err => console.log(err))
+})
+
+app.post('/file-upload', upload.single('file'), (req, res) => {
+  const data = require("../uploads/file.json")
+
+  Customer.create(data);
+  setTimeout(() => {
+    res.send({ success: true })
+  }, 4000);
 })
 
